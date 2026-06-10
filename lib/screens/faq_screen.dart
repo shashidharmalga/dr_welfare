@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../navigation_provider.dart';
 import '../theme.dart';
+import '../widgets/adaptive_widgets.dart';
 
 class FAQScreen extends StatefulWidget {
   const FAQScreen({super.key});
@@ -79,21 +81,25 @@ class _FAQScreenState extends State<FAQScreen> {
   @override
   Widget build(BuildContext context) {
     final navProvider = Provider.of<NavigationProvider>(context);
+    final isIOSVal = isIOS(context);
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu, color: AppTheme.primary, size: 28),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
+              icon: Icon(
+                isIOSVal ? CupertinoIcons.bars : Icons.menu,
+                color: AppTheme.primary,
+                size: 28,
+              ),
+              onPressed: () => handleMenuPress(context),
             );
           },
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               padding: const EdgeInsets.all(4),
@@ -138,18 +144,14 @@ class _FAQScreenState extends State<FAQScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: InkWell(
-              onTap: () {
-                if (navProvider.isRegistered) {
-                  Scaffold.of(context).openDrawer();
-                } else {
-                  navProvider.openLogin();
-                }
-              },
+              onTap: () => handleProfilePress(context),
               child: CircleAvatar(
                 radius: 16,
                 backgroundColor: AppTheme.primaryLight,
                 child: Icon(
-                  navProvider.isRegistered ? Icons.person : Icons.person_outline,
+                  navProvider.isRegistered
+                      ? (isIOSVal ? CupertinoIcons.person_fill : Icons.person)
+                      : (isIOSVal ? CupertinoIcons.person : Icons.person_outline),
                   color: AppTheme.primary,
                   size: 20,
                 ),
@@ -159,7 +161,7 @@ class _FAQScreenState extends State<FAQScreen> {
         ],
         centerTitle: false,
       ),
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Column(
           children: [
             // FAQ Hero Banner
@@ -332,15 +334,8 @@ class _FAQScreenState extends State<FAQScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                    AdaptiveButton(
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                       onPressed: () {
                         navProvider.navigateToContactUs();
                       },

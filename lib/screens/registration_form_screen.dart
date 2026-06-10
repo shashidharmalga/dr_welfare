@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../navigation_provider.dart';
 import '../theme.dart';
+import '../widgets/adaptive_widgets.dart';
 
 class RegistrationFormScreen extends StatefulWidget {
   const RegistrationFormScreen({super.key});
@@ -95,48 +97,76 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
       );
 
       // Show success dialog
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            children: const [
-              Icon(Icons.verified, color: AppTheme.success, size: 28),
-              SizedBox(width: 8),
-              Text('Application Received'),
+      final isIOSVal = isIOS(context);
+      
+      if (isIOSVal) {
+        showCupertinoDialog(
+          context: context,
+          builder: (context) => CupertinoAlertDialog(
+            title: const Text('Application Received'),
+            content: const Text(
+              'Your membership application has been submitted successfully for verification. You will receive an update once the documents are reviewed.',
+            ),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                  navProvider.closeRegistration();
+                  navProvider.setTab(0); // return to home
+                },
+                child: const Text('Go to Home'),
+              ),
             ],
           ),
-          content: const Text(
-            'Your membership application has been submitted successfully for verification. You will receive an update once the documents are reviewed.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                navProvider.closeRegistration();
-                navProvider.setTab(0); // return to home
-              },
-              child: const Text(
-                'Go to Home',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-          ],
-        ),
-      );
+            title: Row(
+              children: const [
+                Icon(Icons.verified, color: AppTheme.success, size: 28),
+                SizedBox(width: 8),
+                Text('Application Received'),
+              ],
+            ),
+            content: const Text(
+              'Your membership application has been submitted successfully for verification. You will receive an update once the documents are reviewed.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  navProvider.closeRegistration();
+                  navProvider.setTab(0); // return to home
+                },
+                child: const Text(
+                  'Go to Home',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final navProvider = Provider.of<NavigationProvider>(context);
+    final isIOSVal = isIOS(context);
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         leading: IconButton(
-          icon: const Icon(Icons.close, color: AppTheme.primary),
+          icon: Icon(
+            isIOSVal ? CupertinoIcons.clear : Icons.close,
+            color: AppTheme.primary,
+          ),
           onPressed: () {
             navProvider.closeRegistration();
           },
@@ -144,7 +174,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
         title: const Text('Join Doctors Welfare'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child: Form(
@@ -545,12 +575,25 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Checkbox(
-                          value: _acceptRules,
-                          activeColor: AppTheme.primary,
-                          onChanged: (val) =>
-                              setState(() => _acceptRules = val ?? false),
-                        ),
+                        if (isIOSVal)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0, top: 4.0),
+                            child: Transform.scale(
+                              scale: 0.8,
+                              child: CupertinoSwitch(
+                                value: _acceptRules,
+                                onChanged: (val) =>
+                                    setState(() => _acceptRules = val),
+                              ),
+                            ),
+                          )
+                        else
+                          Checkbox(
+                            value: _acceptRules,
+                            activeColor: AppTheme.primary,
+                            onChanged: (val) =>
+                                setState(() => _acceptRules = val ?? false),
+                          ),
                         const Expanded(
                           child: Text(
                             'I declare that I have read and agree to follow all Rules, Regulations, and Bye-Laws of PWT mutual support. I understand that assistance claims depend strictly on voluntary member contributions and are not legally enforceable debts.',
@@ -566,12 +609,25 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Checkbox(
-                          value: _receiveUpdates,
-                          activeColor: AppTheme.primary,
-                          onChanged: (val) =>
-                              setState(() => _receiveUpdates = val ?? false),
-                        ),
+                        if (isIOSVal)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Transform.scale(
+                              scale: 0.8,
+                              child: CupertinoSwitch(
+                                value: _receiveUpdates,
+                                onChanged: (val) =>
+                                    setState(() => _receiveUpdates = val),
+                              ),
+                            ),
+                          )
+                        else
+                          Checkbox(
+                            value: _receiveUpdates,
+                            activeColor: AppTheme.primary,
+                            onChanged: (val) =>
+                                setState(() => _receiveUpdates = val ?? false),
+                          ),
                         const Expanded(
                           child: Text(
                             'I agree to receive welfare alerts, updates, and messaging notifications.',
@@ -588,15 +644,8 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                     // Submit Button
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                      child: AdaptiveButton(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         onPressed: () => _submitForm(navProvider),
                         child: const Text(
                           'Submit Application',

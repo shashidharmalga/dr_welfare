@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../navigation_provider.dart';
 import '../theme.dart';
@@ -9,11 +10,47 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navProvider = Provider.of<NavigationProvider>(context);
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
-    // Hide bottom nav bar on Login and Registration screens if needed,
-    // or keep it visible as tabs to switch screens.
-    // Figma usually displays it at the bottom of the screens.
-    // Let's show it on all main views.
+    if (isIOS) {
+      return CupertinoTabBar(
+        currentIndex: navProvider.currentTab,
+        onTap: (index) {
+          navProvider.setTab(index);
+        },
+        activeColor: AppTheme.primary,
+        inactiveColor: AppTheme.textMedium,
+        backgroundColor: CupertinoColors.white,
+        border: const Border(
+          top: BorderSide(
+            color: CupertinoColors.systemGrey5,
+            width: 0.5,
+          ),
+        ),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.house),
+            activeIcon: Icon(CupertinoIcons.house_fill),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.briefcase),
+            activeIcon: Icon(CupertinoIcons.briefcase_fill),
+            label: 'Benefits',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.creditcard),
+            activeIcon: Icon(CupertinoIcons.creditcard_fill),
+            label: 'Membership',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.question_circle),
+            activeIcon: Icon(CupertinoIcons.question_circle_fill),
+            label: 'Support',
+          ),
+        ],
+      );
+    }
 
     return Container(
       decoration: BoxDecoration(

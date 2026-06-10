@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../navigation_provider.dart';
 import '../theme.dart';
+import '../widgets/adaptive_widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -9,27 +11,31 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navProvider = Provider.of<NavigationProvider>(context);
+    final isIOSVal = isIOS(context);
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu, color: AppTheme.primary, size: 28),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
+              icon: Icon(
+                isIOSVal ? CupertinoIcons.bars : Icons.menu,
+                color: AppTheme.primary,
+                size: 28,
+              ),
+              onPressed: () => handleMenuPress(context),
             );
           },
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
               'assets/images/splash_logo.png',
               height: 28,
-              errorBuilder: (context, error, stackTrace) => const Icon(
-                Icons.local_hospital,
+              errorBuilder: (context, error, stackTrace) => Icon(
+                isIOSVal ? CupertinoIcons.plus_rectangle : Icons.local_hospital,
                 color: AppTheme.primary,
                 size: 24,
               ),
@@ -48,20 +54,14 @@ class HomeScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: InkWell(
-              onTap: () {
-                if (navProvider.isRegistered) {
-                  Scaffold.of(context).openDrawer();
-                } else {
-                  navProvider.openLogin();
-                }
-              },
+              onTap: () => handleProfilePress(context),
               child: CircleAvatar(
                 radius: 16,
                 backgroundColor: AppTheme.primaryLight,
                 child: Icon(
                   navProvider.isRegistered
-                      ? Icons.person
-                      : Icons.person_outline,
+                      ? (isIOSVal ? CupertinoIcons.person_fill : Icons.person)
+                      : (isIOSVal ? CupertinoIcons.person : Icons.person_outline),
                   color: AppTheme.primary,
                   size: 20,
                 ),
@@ -71,7 +71,7 @@ class HomeScreen extends StatelessWidget {
         ],
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -150,46 +150,33 @@ class HomeScreen extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primary,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 0,
-                  ),
+                child: AdaptiveButton(
                   onPressed: () {
                     navProvider.openRegistration();
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
+                    children: [
+                      const Text(
                         'Join Now',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
                       ),
-                      SizedBox(width: 6),
-                      Icon(Icons.arrow_forward, size: 16),
+                      const SizedBox(width: 6),
+                      Icon(
+                        isIOS(context) ? CupertinoIcons.arrow_right : Icons.arrow_forward,
+                        size: 16,
+                      ),
                     ],
                   ),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppTheme.primary,
-                    side: const BorderSide(color: AppTheme.primary, width: 1.5),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
+                child: AdaptiveButton(
+                  isOutlined: true,
                   onPressed: () {
                     navProvider.setTab(2); // Go to Membership details
                   },
@@ -305,22 +292,23 @@ class HomeScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              TextButton(
+              AdaptiveButton(
+                isTextOnly: true,
                 onPressed: () {
                   navProvider.setTab(1); // Go to Benefits
                 },
                 child: Row(
-                  children: const [
-                    Text(
+                  children: [
+                    const Text(
                       'View All',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: AppTheme.primary,
                       ),
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Icon(
-                      Icons.chevron_right,
+                      isIOS(context) ? CupertinoIcons.chevron_right : Icons.chevron_right,
                       size: 16,
                       color: AppTheme.primary,
                     ),
@@ -662,16 +650,11 @@ class HomeScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: AppTheme.primary,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100),
-              ),
-              elevation: 0,
-            ),
+          AdaptiveButton(
+            backgroundColor: Colors.white,
+            textColor: AppTheme.primary,
+            borderRadius: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
             onPressed: () {
               navProvider.openRegistration();
             },

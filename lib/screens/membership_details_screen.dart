@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../navigation_provider.dart';
 import '../theme.dart';
+import '../widgets/adaptive_widgets.dart';
 
 class MembershipDetailsScreen extends StatelessWidget {
   const MembershipDetailsScreen({super.key});
@@ -9,27 +11,31 @@ class MembershipDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navProvider = Provider.of<NavigationProvider>(context);
+    final isIOSVal = isIOS(context);
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu, color: AppTheme.primary, size: 28),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
+              icon: Icon(
+                isIOSVal ? CupertinoIcons.bars : Icons.menu,
+                color: AppTheme.primary,
+                size: 28,
+              ),
+              onPressed: () => handleMenuPress(context),
             );
           },
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
               'assets/images/splash_logo.png',
               height: 28,
-              errorBuilder: (context, error, stackTrace) => const Icon(
-                Icons.local_hospital,
+              errorBuilder: (context, error, stackTrace) => Icon(
+                isIOSVal ? CupertinoIcons.plus_rectangle : Icons.local_hospital,
                 color: AppTheme.primary,
                 size: 24,
               ),
@@ -48,20 +54,14 @@ class MembershipDetailsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: InkWell(
-              onTap: () {
-                if (navProvider.isRegistered) {
-                  Scaffold.of(context).openDrawer();
-                } else {
-                  navProvider.openLogin();
-                }
-              },
+              onTap: () => handleProfilePress(context),
               child: CircleAvatar(
                 radius: 16,
                 backgroundColor: AppTheme.primaryLight,
                 child: Icon(
                   navProvider.isRegistered
-                      ? Icons.person
-                      : Icons.person_outline,
+                      ? (isIOSVal ? CupertinoIcons.person_fill : Icons.person)
+                      : (isIOSVal ? CupertinoIcons.person : Icons.person_outline),
                   color: AppTheme.primary,
                   size: 20,
                 ),
@@ -71,7 +71,7 @@ class MembershipDetailsScreen extends StatelessWidget {
         ],
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -125,41 +125,8 @@ class MembershipDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  // 4 Cards grid
-                  GridView.count(
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisSpacing: 14,
-                    mainAxisSpacing: 14,
-                    childAspectRatio: 0.8,
-                    children: [
-                      _buildSupportCard(
-                        icon: Icons.volunteer_activism_outlined,
-                        title: 'Voluntary Membership',
-                        desc:
-                            'Membership is purely voluntary. No person shall be compelled to join the self-support scheme.',
-                      ),
-                      _buildSupportCard(
-                        icon: Icons.currency_rupee_outlined,
-                        title: 'Direct Contributions',
-                        desc:
-                            'All contributions are transferred directly from members to the nominee\'s bank account. PWT is not a financial intermediary.',
-                      ),
-                      _buildSupportCard(
-                        icon: Icons.family_restroom_outlined,
-                        title: 'Nominee Protection',
-                        desc:
-                            'Designated nominee receives voluntary support from fellow members in the event of the member\'s passing.',
-                      ),
-                      _buildSupportCard(
-                        icon: Icons.phone_android_outlined,
-                        title: 'App-Based Coordination',
-                        desc:
-                            'Digital platform for crisis alerts, contribution tracking, info sharing, and doctor networking.',
-                      ),
-                    ],
-                  ),
+                  // Swipable Carousel
+                  const SupportCarousel(),
                 ],
               ),
             ),
@@ -392,48 +359,7 @@ class MembershipDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSupportCard({
-    required IconData icon,
-    required String title,
-    required String desc,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.border, width: 1),
-        boxShadow: AppTheme.cardShadow,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: AppTheme.primary, size: 24),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-              color: AppTheme.textDark,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Expanded(
-            child: Text(
-              desc,
-              style: const TextStyle(
-                color: AppTheme.textMedium,
-                fontSize: 10,
-                height: 1.4,
-              ),
-              overflow: TextOverflow.fade,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildObligationCard({
     required BuildContext context,
@@ -659,4 +585,147 @@ class MembershipDetailsScreen extends StatelessWidget {
   //       ),
   //     );
   //   }
+}
+
+class SupportCarousel extends StatefulWidget {
+  const SupportCarousel({super.key});
+
+  @override
+  State<SupportCarousel> createState() => _SupportCarouselState();
+}
+
+class _SupportCarouselState extends State<SupportCarousel> {
+  int _currentIndex = 0;
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(viewportFraction: 0.85);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final items = [
+      {
+        'icon': Icons.volunteer_activism_outlined,
+        'title': 'Voluntary Membership',
+        'desc': 'Membership is purely voluntary. No person shall be compelled to join the self-support scheme.',
+      },
+      {
+        'icon': Icons.currency_rupee_outlined,
+        'title': 'Direct Contributions',
+        'desc': 'All contributions are transferred directly from members to the nominee\'s bank account. PWT is not a financial intermediary.',
+      },
+      {
+        'icon': Icons.family_restroom_outlined,
+        'title': 'Nominee Protection',
+        'desc': 'Designated nominee receives voluntary support from fellow members in the event of the member\'s passing.',
+      },
+      {
+        'icon': Icons.phone_android_outlined,
+        'title': 'App-Based Coordination',
+        'desc': 'Digital platform for crisis alerts, contribution tracking, info sharing, and doctor networking.',
+      },
+    ];
+
+    return Column(
+      children: [
+        SizedBox(
+          height: 255,
+          child: PageView.builder(
+            controller: _pageController,
+            physics: const BouncingScrollPhysics(),
+            itemCount: items.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return AnimatedBuilder(
+                animation: _pageController,
+                builder: (context, child) {
+                  double value = 1.0;
+                  if (_pageController.position.haveDimensions) {
+                    value = _pageController.page! - index;
+                    value = (1 - (value.abs() * 0.08)).clamp(0.92, 1.0);
+                  } else {
+                    value = index == _currentIndex ? 1.0 : 0.92;
+                  }
+                  return Transform.scale(
+                    scale: value,
+                    child: child,
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 8.0),
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppTheme.border, width: 1),
+                    boxShadow: AppTheme.cardShadow,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(item['icon'] as IconData, color: AppTheme.primary, size: 36),
+                      const SizedBox(height: 14),
+                      Text(
+                        item['title'] as String,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: AppTheme.textDark,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: Text(
+                          item['desc'] as String,
+                          style: const TextStyle(
+                            color: AppTheme.textMedium,
+                            fontSize: 14,
+                            height: 1.5,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 12),
+        // Indicators
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            items.length,
+            (index) => AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              height: 6,
+              width: _currentIndex == index ? 16 : 6,
+              decoration: BoxDecoration(
+                color: _currentIndex == index ? AppTheme.primary : AppTheme.border,
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

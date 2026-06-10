@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../navigation_provider.dart';
 import '../theme.dart';
+import '../widgets/adaptive_widgets.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
@@ -34,70 +36,102 @@ class _ContactScreenState extends State<ContactScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      // Show Success dialog
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            children: const [
-              Icon(Icons.check_circle, color: AppTheme.success, size: 28),
-              SizedBox(width: 8),
-              Text('Message Sent'),
+      final isIOSVal = isIOS(context);
+      
+      if (isIOSVal) {
+        showCupertinoDialog(
+          context: context,
+          builder: (context) => CupertinoAlertDialog(
+            title: const Text('Message Sent'),
+            content: const Text(
+              'Thank you! Your message has been sent successfully. Our support team will get back to you shortly.',
+            ),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // Clear fields
+                  _nameController.clear();
+                  _emailController.clear();
+                  _messageController.clear();
+                  setState(() {
+                    _selectedSubject = null;
+                  });
+                },
+                child: const Text('OK'),
+              ),
             ],
           ),
-          content: const Text(
-            'Thank you! Your message has been sent successfully. Our support team will get back to you shortly.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // Clear fields
-                _nameController.clear();
-                _emailController.clear();
-                _messageController.clear();
-                setState(() {
-                  _selectedSubject = null;
-                });
-              },
-              child: const Text(
-                'OK',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-          ],
-        ),
-      );
+            title: Row(
+              children: const [
+                Icon(Icons.check_circle, color: AppTheme.success, size: 28),
+                SizedBox(width: 8),
+                Text('Message Sent'),
+              ],
+            ),
+            content: const Text(
+              'Thank you! Your message has been sent successfully. Our support team will get back to you shortly.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // Clear fields
+                  _nameController.clear();
+                  _emailController.clear();
+                  _messageController.clear();
+                  setState(() {
+                    _selectedSubject = null;
+                  });
+                },
+                child: const Text(
+                  'OK',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final navProvider = Provider.of<NavigationProvider>(context);
+    final isIOSVal = isIOS(context);
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu, color: AppTheme.primary, size: 28),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
+              icon: Icon(
+                isIOSVal ? CupertinoIcons.bars : Icons.menu,
+                color: AppTheme.primary,
+                size: 28,
+              ),
+              onPressed: () => handleMenuPress(context),
             );
           },
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
               'assets/images/splash_logo.png',
               height: 28,
-              errorBuilder: (context, error, stackTrace) => const Icon(
-                Icons.local_hospital,
+              errorBuilder: (context, error, stackTrace) => Icon(
+                isIOSVal ? CupertinoIcons.plus_rectangle : Icons.local_hospital,
                 color: AppTheme.primary,
                 size: 24,
               ),
@@ -116,20 +150,14 @@ class _ContactScreenState extends State<ContactScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: InkWell(
-              onTap: () {
-                if (navProvider.isRegistered) {
-                  Scaffold.of(context).openDrawer();
-                } else {
-                  navProvider.openLogin();
-                }
-              },
+              onTap: () => handleProfilePress(context),
               child: CircleAvatar(
                 radius: 16,
                 backgroundColor: AppTheme.primaryLight,
                 child: Icon(
                   navProvider.isRegistered
-                      ? Icons.person
-                      : Icons.person_outline,
+                      ? (isIOSVal ? CupertinoIcons.person_fill : Icons.person)
+                      : (isIOSVal ? CupertinoIcons.person : Icons.person_outline),
                   color: AppTheme.primary,
                   size: 20,
                 ),
@@ -139,7 +167,7 @@ class _ContactScreenState extends State<ContactScreen> {
         ],
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child: Column(
@@ -484,30 +512,25 @@ class _ContactScreenState extends State<ContactScreen> {
                     // Send Button
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              100,
-                            ), // fully rounded
-                          ),
-                        ),
+                      child: AdaptiveButton(
+                        borderRadius: 100,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                         onPressed: _submitForm,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
+                          children: [
+                            const Text(
                               'Send Message',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,
                               ),
                             ),
-                            SizedBox(width: 8),
-                            Icon(Icons.send, size: 16),
+                            const SizedBox(width: 8),
+                            Icon(
+                              isIOS(context) ? CupertinoIcons.paperplane : Icons.send,
+                              size: 16,
+                            ),
                           ],
                         ),
                       ),

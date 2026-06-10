@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../navigation_provider.dart';
 import '../theme.dart';
+import '../widgets/adaptive_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -57,11 +59,16 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final navProvider = Provider.of<NavigationProvider>(context);
 
-    return Scaffold(
+    final isIOSVal = isIOS(context);
+
+    return AdaptiveScaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: AdaptiveAppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppTheme.primary),
+          icon: Icon(
+            isIOSVal ? CupertinoIcons.back : Icons.arrow_back,
+            color: AppTheme.primary,
+          ),
           onPressed: () {
             navProvider.closeLogin();
           },
@@ -69,8 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
         title: const Text('Login'),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
+      child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
             child: Form(
@@ -229,18 +235,34 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Row(
                         children: [
-                          Checkbox(
-                            value: _rememberMe,
-                            activeColor: AppTheme.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
+                          if (isIOSVal)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Transform.scale(
+                                scale: 0.8,
+                                child: CupertinoSwitch(
+                                  value: _rememberMe,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _rememberMe = val;
+                                    });
+                                  },
+                                ),
+                              ),
+                            )
+                          else
+                            Checkbox(
+                              value: _rememberMe,
+                              activeColor: AppTheme.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              onChanged: (val) {
+                                setState(() {
+                                  _rememberMe = val ?? false;
+                                });
+                              },
                             ),
-                            onChanged: (val) {
-                              setState(() {
-                                _rememberMe = val ?? false;
-                              });
-                            },
-                          ),
                           const Text(
                             'Remember me',
                             style: TextStyle(
@@ -277,29 +299,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Login Button
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        elevation: 0,
-                      ),
+                    child: AdaptiveButton(
                       onPressed: () => _submitLogin(navProvider),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text(
+                        children: [
+                          const Text(
                             'Login securely',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
                             ),
                           ),
-                          SizedBox(width: 8),
-                          Icon(Icons.arrow_forward, size: 16),
+                          const SizedBox(width: 8),
+                          Icon(
+                            isIOSVal ? CupertinoIcons.arrow_right : Icons.arrow_forward,
+                            size: 16,
+                          ),
                         ],
                       ),
                     ),
@@ -338,7 +354,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
-}
