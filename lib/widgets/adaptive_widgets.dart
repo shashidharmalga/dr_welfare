@@ -361,7 +361,14 @@ void showiOSMenu(BuildContext context) {
             Navigator.pop(context);
             navProvider.setTab(2);
           },
-          child: const Text('How It Works / Membership Details'),
+          child: const Text('How It Works'),
+        ),
+        CupertinoActionSheetAction(
+          onPressed: () {
+            Navigator.pop(context);
+            navProvider.setTab(4);
+          },
+          child: const Text('Membership Details'),
         ),
         CupertinoActionSheetAction(
           onPressed: () {

@@ -79,16 +79,10 @@ class HomeScreen extends StatelessWidget {
             _buildHeroSection(context, navProvider),
 
             // "Built by Doctors, For Doctors" Section
-            _buildBuiltByDoctorsSection(context),
-
-            // "Our Services" Section
-            _buildServicesSection(context, navProvider),
+            _buildBuiltByDoctorsSection(context, navProvider),
 
             // "Why Choose Doctors Welfare" Section
             _buildWhyChooseSection(context),
-
-            // "Latest Updates" Section
-            _buildUpdatesSection(context),
 
             // Bottom CTA
             _buildBottomCTA(context, navProvider),
@@ -103,54 +97,50 @@ class HomeScreen extends StatelessWidget {
     NavigationProvider navProvider,
   ) {
     return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF0F2B5C), // Deep premium navy
+            Color(0xFF0A58CA), // Brand primary blue
+          ],
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryLight,
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: Text(
-              'Trusted by Professionals',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
           const SizedBox(height: 16),
-
           // Heading
           Text(
-            'Empowering\nHealthcare\nProfessionals',
+            'Empowering Medical Professionals Together',
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              color: AppTheme.primary,
-              letterSpacing: -0.5,
+              color: Colors.white,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              height: 1.25,
             ),
           ),
           const SizedBox(height: 16),
-
           // Subheading
           const Text(
-            'Comprehensive welfare solutions, benefits, and support systems designed exclusively for doctors and medical practitioners across India.',
+            'Join Doctors Welfare — An initiative by Professionals Welfare Trust (PWT). A member-based mutual self-support platform designed exclusively for registered doctors.',
             style: TextStyle(
-              color: AppTheme.textMedium,
+              color: Color(0xFFE2E8F0),
               fontSize: 15,
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 24),
-
+          const SizedBox(height: 28),
           // Buttons
           Row(
             children: [
               Expanded(
                 child: AdaptiveButton(
+                  backgroundColor: Colors.white,
+                  textColor: AppTheme.primary,
                   onPressed: () {
                     navProvider.openRegistration();
                   },
@@ -164,9 +154,10 @@ class HomeScreen extends StatelessWidget {
                           fontSize: 15,
                         ),
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 8),
                       Icon(
                         isIOS(context) ? CupertinoIcons.arrow_right : Icons.arrow_forward,
+                        color: AppTheme.primary,
                         size: 16,
                       ),
                     ],
@@ -177,8 +168,10 @@ class HomeScreen extends StatelessWidget {
               Expanded(
                 child: AdaptiveButton(
                   isOutlined: true,
+                  backgroundColor: Colors.white,
+                  textColor: Colors.white,
                   onPressed: () {
-                    navProvider.setTab(2); // Go to Membership details
+                    navProvider.setTab(2); // Go to How It Works
                   },
                   child: const Text(
                     'Learn More',
@@ -188,18 +181,58 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
 
-          // Hero Image Card
+  Widget _buildBuiltByDoctorsSection(BuildContext context, NavigationProvider navProvider) {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryLight,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: Text(
+              'Medical tools',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.primary,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Heading
+          Text(
+            'Built by Doctors, For Doctors',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: AppTheme.textDark,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Image
           Container(
             width: double.infinity,
             height: 220,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               boxShadow: AppTheme.cardShadow,
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               child: Image.asset(
                 'assets/images/hero_doctor.png',
                 fit: BoxFit.cover,
@@ -218,403 +251,184 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
+          const SizedBox(height: 24),
 
-  Widget _buildBuiltByDoctorsSection(BuildContext context) {
-    return Container(
-      color: AppTheme.background,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppTheme.border, width: 1),
-          boxShadow: AppTheme.cardShadow,
-        ),
-        child: Column(
-          children: [
-            const CircleAvatar(
-              radius: 28,
-              backgroundColor: AppTheme.primaryLight,
-              child: Icon(
-                Icons.local_hospital,
-                color: AppTheme.primary,
-                size: 32,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Built by Doctors, For Doctors',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppTheme.textDark,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Our platform is uniquely designed by healthcare professionals who understand the real-world challenges you face daily. We\'re dedicated to improving your professional journey and personal well-being.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppTheme.textMedium,
-                fontSize: 14,
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildServicesSection(
-    BuildContext context,
-    NavigationProvider navProvider,
-  ) {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section Title
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Our Services',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppTheme.textDark,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              AdaptiveButton(
-                isTextOnly: true,
-                onPressed: () {
-                  navProvider.setTab(1); // Go to Benefits
-                },
-                child: Row(
-                  children: [
-                    const Text(
-                      'View All',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.primary,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      isIOS(context) ? CupertinoIcons.chevron_right : Icons.chevron_right,
-                      size: 16,
-                      color: AppTheme.primary,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          // Bullet Points
+          _buildBulletPoint(
+            context,
+            'Open to Doctors, Dentists, Dermatologists, Surgeons, Pediatricians, Ophthalmologists & other Medical Doctors',
           ),
           const SizedBox(height: 16),
-
-          // Services Cards Grid
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.72,
-            children: [
-              _buildServiceCard(
-                context: context,
-                icon: Icons.shield_outlined,
-                iconBg: AppTheme.primaryLight,
-                iconColor: AppTheme.primary,
-                title: 'Comprehensive Insurance',
-                body:
-                    'Premium health and life insurance covers tailored for medical professionals, ensuring peace of mind for you and your family.',
-              ),
-              _buildServiceCard(
-                context: context,
-                icon: Icons.gavel_outlined,
-                iconBg: const Color(0xFFF0EFFF),
-                iconColor: const Color(0xFF5B50D6),
-                title: 'Legal Support',
-                body:
-                    '24/7 legal assistance and protection against professional indemnity claims.',
-              ),
-              _buildServiceCard(
-                context: context,
-                icon: Icons.school_outlined,
-                iconBg: const Color(0xFFFFF0E6),
-                iconColor: const Color(0xFFD35400),
-                title: 'Continuing Education',
-                body:
-                    'Access to exclusive webinars, workshops, and medical conferences.',
-              ),
-              _buildServiceCard(
-                context: context,
-                icon: Icons.forum_outlined,
-                iconBg: const Color(0xFFE6FFFA),
-                iconColor: const Color(0xFF0D9488),
-                title: 'Community Forum',
-                body:
-                    'Connect with thousands of peers nationwide. Share experiences, seek advice, and build a strong professional network.',
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildServiceCard({
-    required BuildContext context,
-    required IconData icon,
-    required Color iconBg,
-    required Color iconColor,
-    required String title,
-    required String body,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.border, width: 1),
-        boxShadow: AppTheme.cardShadow,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: iconBg,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: iconColor, size: 24),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-              color: AppTheme.textDark,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: Text(
-              body,
-              style: const TextStyle(
-                color: AppTheme.textMedium,
-                fontSize: 11,
-                height: 1.4,
-              ),
-              overflow: TextOverflow.fade,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWhyChooseSection(BuildContext context) {
-    return Container(
-      color: AppTheme.background,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Why Choose Doctors Welfare',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppTheme.textDark,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          _buildWhyChoosePoint(
-            context: context,
-            title: 'Tailored Financial Security',
-            body:
-                'Specialized plans designed for the unique income cycles and risks of medical practitioners.',
+          _buildBulletPoint(
+            context,
+            'Voluntary mutual assistance — contributions go directly from members to the nominee\'s bank account',
           ),
           const SizedBox(height: 16),
-          _buildWhyChoosePoint(
-            context: context,
-            title: 'Unmatched Legal Protection',
-            body:
-                'Robust defense mechanisms against malpractice suits and regulatory challenges.',
+          _buildBulletPoint(
+            context,
+            'Transparent, app-based coordination with full accountability',
           ),
           const SizedBox(height: 16),
-          _buildWhyChoosePoint(
-            context: context,
-            title: 'Exclusive Peer Network',
-            body:
-                'A verified, private community for confidential discussions and referrals.',
+          _buildBulletPoint(
+            context,
+            'Public Charitable & Welfare Trust — Non-Profit, not an insurance or investment scheme',
+          ),
+          const SizedBox(height: 28),
+
+          // Button
+          SizedBox(
+            width: double.infinity,
+            child: AdaptiveButton(
+              backgroundColor: AppTheme.primary,
+              onPressed: () {
+                navProvider.setTab(4); // Go to Membership details
+              },
+              child: const Text(
+                'View Membership Details',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildWhyChoosePoint({
-    required BuildContext context,
-    required String title,
-    required String body,
-  }) {
+  Widget _buildBulletPoint(BuildContext context, String text) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.check_circle, color: AppTheme.primary, size: 24),
+        const Icon(
+          Icons.check_circle_outline,
+          color: AppTheme.primary,
+          size: 22,
+        ),
         const SizedBox(width: 12),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: AppTheme.textDark,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                body,
-                style: const TextStyle(
-                  color: AppTheme.textMedium,
-                  fontSize: 13,
-                  height: 1.4,
-                ),
-              ),
-            ],
+          child: Text(
+            text,
+            style: const TextStyle(
+              color: AppTheme.textMedium,
+              fontSize: 14,
+              height: 1.4,
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildUpdatesSection(BuildContext context) {
+  Widget _buildWhyChooseSection(BuildContext context) {
     return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
+      color: AppTheme.background,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Section Title
           Text(
-            'Latest Updates',
+            'Why Choose Doctors Welfare?',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: AppTheme.textDark,
               fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+
+          // Subtitle
+          const Text(
+            'A voluntary, member-driven mutual support model where doctors help each other through difficult times',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppTheme.textMedium,
+              fontSize: 14,
+              height: 1.4,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 28),
 
-          _buildUpdateCard(
+          // Cards List
+          _buildWhyChooseCard(
             context: context,
-            icon: Icons.campaign,
-            iconBg: const Color(0xFFFFF0F1),
-            iconColor: AppTheme.danger,
-            title: 'New Policy Changes 2024',
-            time: '2 hrs ago',
+            icon: Icons.shield_outlined,
+            title: 'Mutual Self-Support',
             body:
-                'Important updates regarding professional indemnity requirements and revised regulatory standards for clinical practitioners.',
+                'Members voluntarily contribute to support the family/nominee of a deceased member. PWT coordinates — it does not collect or hold funds.',
           ),
           const SizedBox(height: 16),
-          _buildUpdateCard(
+          _buildWhyChooseCard(
             context: context,
-            icon: Icons.calendar_today,
-            iconBg: AppTheme.primaryLight,
-            iconColor: AppTheme.primary,
-            title: 'Annual Medical Symposium',
-            time: 'Yesterday',
+            icon: Icons.people_outline,
+            title: 'Doctors Community',
             body:
-                'Registrations are now open for the upcoming National Medical Symposium focusing on clinical excellence and healthcare policies.',
+                'Join a network of doctors, dentists, dermatologists, surgeons, pediatricians & other medical doctors who support each other.',
+          ),
+          const SizedBox(height: 16),
+          _buildWhyChooseCard(
+            context: context,
+            icon: Icons.favorite_border,
+            title: 'Nominee Protection',
+            body:
+                'In the event of a member\'s passing, contributions from fellow members are transferred directly to the designated nominee\'s bank account.',
           ),
         ],
       ),
     );
   }
 
-  Widget _buildUpdateCard({
+  Widget _buildWhyChooseCard({
     required BuildContext context,
     required IconData icon,
-    required Color iconBg,
-    required Color iconColor,
     required String title,
-    required String time,
     required String body,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppTheme.border, width: 1),
         boxShadow: AppTheme.cardShadow,
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Icon Container
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: iconBg,
+              color: AppTheme.primaryLight,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: iconColor, size: 24),
+            child: Icon(
+              icon,
+              color: AppTheme.primary,
+              size: 24,
+            ),
           ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: AppTheme.textDark,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Text(
-                      time,
-                      style: const TextStyle(
-                        color: AppTheme.textLight,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  body,
-                  style: const TextStyle(
-                    color: AppTheme.textMedium,
-                    fontSize: 12,
-                    height: 1.4,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+          const SizedBox(height: 16),
+
+          // Title
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: AppTheme.textDark,
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // Body Text
+          Text(
+            body,
+            style: const TextStyle(
+              color: AppTheme.textMedium,
+              fontSize: 13,
+              height: 1.4,
             ),
           ),
         ],
@@ -626,12 +440,12 @@ class HomeScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: AppTheme.primary,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            'Ready to Join Our Community?',
+            'Ready to Join Our Community of Doctors?',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -641,26 +455,29 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           const Text(
-            'Take the next step in securing your professional future and well-being today.',
+            'Take the first step towards mutual support. Membership is open to all registered doctors aged 60 or below (Indian citizens only).',
             style: TextStyle(
-              color: Color(0xFFD0E1FD),
+              color: Color(0xFFEFF6FF),
               fontSize: 14,
               height: 1.4,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 24),
-          AdaptiveButton(
-            backgroundColor: Colors.white,
-            textColor: AppTheme.primary,
-            borderRadius: 100,
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            onPressed: () {
-              navProvider.openRegistration();
-            },
-            child: const Text(
-              'Become a Member Now',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          const SizedBox(height: 28),
+          SizedBox(
+            width: double.infinity,
+            child: AdaptiveButton(
+              backgroundColor: Colors.white,
+              textColor: AppTheme.primary,
+              borderRadius: 8,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              onPressed: () {
+                navProvider.openRegistration();
+              },
+              child: const Text(
+                'Start Your Application Today',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              ),
             ),
           ),
         ],

@@ -7,6 +7,7 @@ import 'screens/splash_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/benefits_screen.dart';
 import 'screens/membership_details_screen.dart';
+import 'screens/how_it_works_screen.dart';
 import 'screens/faq_screen.dart';
 import 'screens/contact_screen.dart';
 import 'screens/login_screen.dart';
@@ -116,12 +117,15 @@ class _AppContentManagerState extends State<AppContentManager> {
         activeBody = const BenefitsScreen();
         break;
       case 2:
-        activeBody = const MembershipDetailsScreen();
+        activeBody = const HowItWorksScreen();
         break;
       case 3:
         activeBody = navProvider.showContactUsUnderSupport
             ? const ContactScreen()
             : const FAQScreen();
+        break;
+      case 4:
+        activeBody = const MembershipDetailsScreen();
         break;
       default:
         activeBody = const HomeScreen();

@@ -17,64 +17,64 @@ class _FAQScreenState extends State<FAQScreen> {
 
   final List<Map<String, String>> _faqs = [
     {
-      'q': 'What is Doctors Welfare?',
-      'a': 'Doctors Welfare is a mutual self-support trust initiated by Professionals Welfare Trust (PWT) designed to provide support to the families of deceased doctors through voluntary contributions.'
+      "q": "What is Doctors Welfare?",
+      "a": "Doctors Welfare is a member-based mutual self-support platform exclusively for registered doctors. It is operated by the Professionals Welfare Trust (PWT) — a Public Charitable & Welfare Trust (Non-Profit). It is NOT an insurance company, investment scheme, or profit-making entity."
     },
     {
-      'q': 'Who is eligible to join Doctors Welfare?',
-      'a': 'Any registered medical practitioner in India (MBBS, MD, MS, BDS, MDS, etc.) holding valid council registration who is under 60 years of age.'
+      "q": "Who is eligible to join Doctors Welfare?",
+      "a": "Membership is open to Indian citizens only, specifically registered medical and dental doctors including: Doctors (MBBS, MD, MS), Dentists (BDS, MDS), Dermatologists, Surgeons & Physicians, Pediatricians, Ophthalmologists, Orthopedic Specialists, and other registered medical doctors. Applicants must be aged 60 or below at the time of enrollment."
     },
     {
-      'q': 'Is there an age limit for membership?',
-      'a': 'Yes. Minimum enrollment age is 18 and maximum is 60. Membership automatically terminates at age 65.'
+      "q": "Is there an age limit for membership?",
+      "a": "Yes. Applicants must be aged 60 or below at the time of enrollment. Membership terminates automatically at age 65, regardless of the enrollment date. Coverage extends from enrollment up to age 65."
     },
     {
-      'q': 'What is the lock-in period?',
-      'a': 'A 12-month lock-in period applies post-enrollment. Assistance is restricted to accident-related claims during this duration. Natural death claims are only valid after 12 months.'
+      "q": "What is the lock-in period?",
+      "a": "A mandatory lock-in period of 12 months applies from the date of joining. No assistance or claim shall be entertained during the lock-in period. The lock-in is non-waivable under any circumstances."
     },
     {
-      'q': 'What kind of support does PWT provide?',
-      'a': 'PWT coordinates mutual support where registered members contribute directly to the nominee of a deceased member. It provides the digital infrastructure for this coordination.'
+      "q": "What kind of support does PWT provide?",
+      "a": "PWT coordinates voluntary contributions from members to the family/nominee of a deceased member. All contributions are transferred directly from members to the nominee's bank account. PWT acts only as a coordinating and facilitating entity — it does not collect or hold contribution funds. Assistance may be coordinated for death due to natural causes, accidents, or critical illnesses (including cancer)."
     },
     {
-      'q': 'Does PWT guarantee any specific amount?',
-      'a': 'No, PWT does not guarantee a fixed amount as it depends entirely on the voluntary contributions of active members at the time of a member\'s passing.'
+      "q": "Does PWT guarantee any specific amount?",
+      "a": "No. PWT does not assure or guarantee any amount. Assistance depends entirely on the voluntary cooperation of members. No claim is enforceable as a legal right or debt. Members have no legal claim to receive any fixed or guaranteed benefit."
     },
     {
-      'q': 'How do contributions work?',
-      'a': 'When an active member passes away, PWT alerts all members. Each member is required to transfer their contribution directly to the designated nominee\'s bank account.'
+      "q": "How do contributions work?",
+      "a": "When a member passes away, all registered members are required to contribute to the deceased member's nominee. Contributions are made directly to the nominee's bank account — PWT facilitates the coordination. Members must upload valid payment receipts via the official website or designated Google Form. Failure to contribute renders a member ineligible for future assistance."
     },
     {
-      'q': 'What is a nominee and why is it required?',
-      'a': 'A nominee is the family member designated by the doctor to receive direct bank contributions from other members in the event of the doctor\'s passing.'
+      "q": "What is a nominee and why is it required?",
+      "a": "A nominee is the person designated by a member to receive voluntary contributions from fellow members in case of the member's death. Providing nominee details (including bank account information) is mandatory during registration, as all contributions are transferred directly to the nominee's bank account."
     },
     {
-      'q': 'What are the exclusions for assistance?',
-      'a': 'Exclusions include deaths by suicide, homicide allegations involving the nominee, and claims submitted with misrepresentation or during the lock-in period.'
+      "q": "What are the exclusions for assistance?",
+      "a": "No assistance shall be provided where: (1) Death involves suicide or homicide allegations involving the nominee, (2) Criminal proceedings or misrepresentation exists, (3) The member had not completed the lock-in period, (4) The member had not fulfilled contribution obligations, or (5) There is fraud or suppression of facts. The final decision rests solely with the Trustees."
     },
     {
-      'q': 'Can I cancel my membership?',
-      'a': 'Yes, membership can be cancelled at any time by notifying PWT. However, past contributions are voluntary and non-refundable.'
+      "q": "Can I cancel my membership?",
+      "a": "Yes, participation may be discontinued at any time, subject to terms and conditions. However, membership fees are non-refundable, and no claim or refund shall arise after termination. Voluntary withdrawals may rejoin after fulfilling all outstanding financial obligations."
     },
     {
-      'q': 'What happens if I don\'t contribute when required?',
-      'a': 'Failure to contribute to a verified call for assistance leads to warnings. Continued non-cooperation will suspend or terminate your membership.'
+      "q": "What happens if I don't contribute when required?",
+      "a": "Failure to make a contribution or upload proof within the stipulated period will render you ineligible for assistance. Non-cooperation or failure to contribute shall automatically suspend your membership. Membership may be reinstated upon full payment of all outstanding dues."
     },
     {
-      'q': 'How is the sequence of assistance determined?',
-      'a': 'Assistance is processed based on the chronological order of verified claims received by PWT, subject to completion of all required documentation.'
+      "q": "How is the sequence of assistance determined?",
+      "a": "In case of multiple deaths, support is extended in order of date of death. If multiple deaths occur on the same date, the member with the highest average contribution ratio receives priority. PWT reserves the right to determine the final order of assistance in exceptional cases."
     },
     {
-      'q': 'Is membership transferable?',
-      'a': 'No, membership is personal and cannot be transferred to any other person or family member.'
+      "q": "Is membership transferable?",
+      "a": "No. Membership is non-transferable and non-assignable. It does not create any legal or contractual right to benefits."
     },
     {
-      'q': 'What digital platform does PWT operate?',
-      'a': 'PWT operates a web-based portal and mobile app coordination system to send alerts, track contributions, and upload receipts.'
+      "q": "What digital platform does PWT operate?",
+      "a": "PWT operates a Mobile App, Website, Helpline, and Online communication systems. The platform is used for crisis alerts, information sharing, coordination of voluntary support, and doctor networking. Members shall not misuse the platform — prohibited acts include false information, commercial exploitation, and abusive conduct."
     },
     {
-      'q': 'Which courts have jurisdiction over PWT matters?',
-      'a': 'Any dispute arising out of PWT operations shall be subject to the exclusive jurisdiction of the competent courts in Hyderabad, Telangana.'
+      "q": "Which courts have jurisdiction over PWT matters?",
+      "a": "Courts at Hyderabad, Telangana State alone shall have jurisdiction over any matters related to PWT. The Trustees' interpretation of Rules & Bye-Laws shall be final and binding."
     },
   ];
 

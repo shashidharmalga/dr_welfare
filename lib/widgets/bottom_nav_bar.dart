@@ -11,12 +11,18 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final navProvider = Provider.of<NavigationProvider>(context);
     final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    final currentTab = navProvider.currentTab;
+    final displayIndex = (currentTab == 4 || currentTab == 2) ? 2 : (currentTab > 3 ? 0 : currentTab);
 
     if (isIOS) {
       return CupertinoTabBar(
-        currentIndex: navProvider.currentTab,
+        currentIndex: displayIndex,
         onTap: (index) {
-          navProvider.setTab(index);
+          if (index == 2) {
+            navProvider.setTab(4);
+          } else {
+            navProvider.setTab(index);
+          }
         },
         activeColor: AppTheme.primary,
         inactiveColor: AppTheme.textMedium,
@@ -65,9 +71,13 @@ class CustomBottomNavBar extends StatelessWidget {
         ],
       ),
       child: BottomNavigationBar(
-        currentIndex: navProvider.currentTab,
+        currentIndex: displayIndex,
         onTap: (index) {
-          navProvider.setTab(index);
+          if (index == 2) {
+            navProvider.setTab(4);
+          } else {
+            navProvider.setTab(index);
+          }
         },
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,

@@ -23,7 +23,10 @@ class DrawerMenu extends StatelessWidget {
         navProvider.currentTab == 2 &&
         !navProvider.showRegistration &&
         !navProvider.showLogin;
-    bool isMembershipActive = navProvider.showRegistration;
+    bool isMembershipActive =
+        navProvider.currentTab == 4 &&
+        !navProvider.showRegistration &&
+        !navProvider.showLogin;
     bool isFAQsActive =
         navProvider.currentTab == 3 &&
         !navProvider.showContactUsUnderSupport &&
@@ -147,7 +150,7 @@ class DrawerMenu extends StatelessWidget {
                   label: 'Membership',
                   isActive: isMembershipActive,
                   onTap: () {
-                    navProvider.openRegistration();
+                    navProvider.setTab(4);
                     Navigator.pop(context);
                   },
                 ),
